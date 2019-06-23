@@ -10,6 +10,10 @@ import java.util.UUID;
 		@Index(name = "idx_phone", columnList = "phone", unique = true),
 		@Index(name = "idx_email", columnList = "email", unique = true)
 })
+@NamedQueries({
+		@NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
+		@NamedQuery(name = "User.findByPhone", query = "SELECT u FROM User u WHERE u.phone = :phone")
+})
 public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 

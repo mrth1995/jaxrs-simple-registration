@@ -19,6 +19,18 @@ public class WebUserCreate {
 	private Boolean gender;
 	private String phone;
 
+	public WebUserCreate() {
+	}
+
+	public WebUserCreate(String firstName, String lastName, Date birthDate, String email, Boolean gender, String phone) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.birthDate = birthDate;
+		this.email = email;
+		this.gender = gender;
+		this.phone = phone;
+	}
+
 	public String getFirstName() {
 		return firstName;
 	}
