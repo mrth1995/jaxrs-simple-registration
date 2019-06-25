@@ -4,13 +4,13 @@
         <form class="form-wrapper" @submit.prevent="register">
             <div id="message">{{ message }}</div>
             <div class="form-group">
-                <input type="text" v-model="firstName" name="firstName" placeholder="First Name" required :disabled="disabled"/>
+                <input type="text" v-model="firstName" name="firstName" placeholder="First Name" required :disabled="disabled" size="64" maxlength="64"/>
             </div>
             <div class="form-group">
-                <input type="text" v-model="lastName" name="lastName" placeholder="Last Name" required :disabled="disabled"/>
+                <input type="text" v-model="lastName" name="lastName" placeholder="Last Name" required :disabled="disabled" size="64" maxlength="64"/>
             </div>
             <div class="form-group">
-                <input type="text" v-model="phone" name="phone" placeholder="Phone" required :disabled="disabled"/>
+                <input type="text" v-model="phone" name="phone" placeholder="Phone" required :disabled="disabled" size="16" maxlength="16"/>
             </div>
             <div class="form-group">
                     <label>Date of Birth</label>
@@ -45,10 +45,13 @@
                 <input type="radio" v-model="gender" name="gender" value="false"><label>Female</label>
             </div>
             <div class="form-group">
-                <input type="text" v-model="email" name="email" placeholder="Email" required :disabled="disabled"/>
+                <input type="text" v-model="email" name="email" placeholder="Email" required :disabled="disabled" size="32" maxlength="32"/>
             </div>
             <div class="form-group">
                 <button type="submit" :disabled="disabled">Register</button>
+            </div>
+            <div class="form-group" v-if="loginButtonEnabled">
+                <button type="button" @click="redirectLogin()" v-if="loginButtonEnabled">Login</button>
             </div>
         </form>
         <div class="form-footer">
@@ -73,15 +76,15 @@ export default {
       gender: true,
       yearOptions: '',
       message: '',
-      disabled: false
+      disabled: false,
+      loginButtonEnabled: false
     }
   },
   methods: {
     async register () {
       const birthDate = this.year + '-' + this.month + '-' + this.date
       this.disabled = true
-      console.log(birthDate)
-      var redirect = 'Registration'
+      this.message = ''
       await Registration.register({
         phone: this.phone,
         firstName: this.firstName,
@@ -92,15 +95,18 @@ export default {
       }).then(
         (response) => {
           console.log('Success')
-          redirect = 'Login'
+          this.loginButtonEnabled = true
         },
         (error) => {
-          console.log('xxx: ' + error.response.data)
-          this.message = error.response.data
+          if (error.response !== undefined) {
+            this.message = error.response.data
+          } else {
+            this.message = error
+          }
           this.disabled = false
+          this.$router.push({name: 'Registration'})
         }
       )
-      this.$router.push({name: redirect})
     },
     getYear () {
       const year = new Date().getFullYear()
@@ -109,13 +115,14 @@ export default {
     checkTotalDay () {
       var year = this.year
       var month = this.month
-      console.log(this.month)
-      console.log(this.year)
       var totalDate = 31
       if (year !== '' && month !== '') {
         totalDate = new Date(year, month, 0).getDate()
       }
       return totalDate
+    },
+    redirectLogin () {
+      this.$router.push({name: 'Login'})
     }
   }
 }
